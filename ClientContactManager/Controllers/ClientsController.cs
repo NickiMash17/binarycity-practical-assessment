@@ -10,11 +10,16 @@ namespace ClientContactManager.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly ClientCodeGenerator _codeGenerator;
+        private readonly ILogger<ClientsController> _logger;
 
-        public ClientsController(ApplicationDbContext context, ClientCodeGenerator codeGenerator)
+        public ClientsController(
+            ApplicationDbContext context,
+            ClientCodeGenerator codeGenerator,
+            ILogger<ClientsController> logger)
         {
             _context = context;
             _codeGenerator = codeGenerator;
+            _logger = logger;
         }
 
         // GET: Clients
@@ -39,6 +44,9 @@ namespace ClientContactManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name")] Client client)
         {
+            // ClientCode is generated server-side, so remove it from model validation.
+            ModelState.Remove(nameof(Client.ClientCode));
+
             if (ModelState.IsValid)
             {
                 try
@@ -53,7 +61,8 @@ namespace ClientContactManager.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", $"Error creating client: {ex.Message}");
+                    _logger.LogError(ex, "Error creating client");
+                    ModelState.AddModelError("", "An unexpected error occurred while creating the client.");
                 }
             }
             return View(client);
@@ -129,7 +138,8 @@ namespace ClientContactManager.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", $"Error updating client: {ex.Message}");
+                    _logger.LogError(ex, "Error updating client with id {ClientId}", id);
+                    ModelState.AddModelError("", "An unexpected error occurred while updating the client.");
                 }
             }
 
@@ -183,13 +193,16 @@ namespace ClientContactManager.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error linking contact: {ex.Message}";
+                _logger.LogError(ex, "Error linking contact {ContactId} to client {ClientId}", contactId, clientId);
+                TempData["ErrorMessage"] = "An unexpected error occurred while linking the contact.";
             }
 
             return RedirectToAction(nameof(Edit), new { id = clientId });
         }
 
-        // GET: Clients/UnlinkContact
+        // POST: Clients/UnlinkContact
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UnlinkContact(int clientId, int contactId)
         {
             try
@@ -210,7 +223,8 @@ namespace ClientContactManager.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error unlinking contact: {ex.Message}";
+                _logger.LogError(ex, "Error unlinking contact {ContactId} from client {ClientId}", contactId, clientId);
+                TempData["ErrorMessage"] = "An unexpected error occurred while unlinking the contact.";
             }
 
             return RedirectToAction(nameof(Edit), new { id = clientId });
@@ -253,7 +267,8 @@ namespace ClientContactManager.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error deleting client: {ex.Message}";
+                _logger.LogError(ex, "Error deleting client with id {ClientId}", id);
+                TempData["ErrorMessage"] = "An unexpected error occurred while deleting the client.";
             }
 
             return RedirectToAction(nameof(Index));

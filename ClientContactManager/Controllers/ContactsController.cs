@@ -8,10 +8,12 @@ namespace ClientContactManager.Controllers
     public class ContactsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly ILogger<ContactsController> _logger;
 
-        public ContactsController(ApplicationDbContext context)
+        public ContactsController(ApplicationDbContext context, ILogger<ContactsController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: Contacts
@@ -54,7 +56,8 @@ namespace ClientContactManager.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", $"Error creating contact: {ex.Message}");
+                    _logger.LogError(ex, "Error creating contact");
+                    ModelState.AddModelError("", "An unexpected error occurred while creating the contact.");
                 }
             }
             return View(contact);
@@ -126,7 +129,8 @@ namespace ClientContactManager.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError("", $"Error updating contact: {ex.Message}");
+                    _logger.LogError(ex, "Error updating contact with id {ContactId}", id);
+                    ModelState.AddModelError("", "An unexpected error occurred while updating the contact.");
                 }
             }
 
@@ -179,13 +183,16 @@ namespace ClientContactManager.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error linking client: {ex.Message}";
+                _logger.LogError(ex, "Error linking client {ClientId} to contact {ContactId}", clientId, contactId);
+                TempData["ErrorMessage"] = "An unexpected error occurred while linking the client.";
             }
 
             return RedirectToAction(nameof(Edit), new { id = contactId });
         }
 
-        // GET: Contacts/UnlinkClient
+        // POST: Contacts/UnlinkClient
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UnlinkClient(int contactId, int clientId)
         {
             try
@@ -206,7 +213,8 @@ namespace ClientContactManager.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error unlinking client: {ex.Message}";
+                _logger.LogError(ex, "Error unlinking client {ClientId} from contact {ContactId}", clientId, contactId);
+                TempData["ErrorMessage"] = "An unexpected error occurred while unlinking the client.";
             }
 
             return RedirectToAction(nameof(Edit), new { id = contactId });
@@ -249,7 +257,8 @@ namespace ClientContactManager.Controllers
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Error deleting contact: {ex.Message}";
+                _logger.LogError(ex, "Error deleting contact with id {ContactId}", id);
+                TempData["ErrorMessage"] = "An unexpected error occurred while deleting the contact.";
             }
 
             return RedirectToAction(nameof(Index));
