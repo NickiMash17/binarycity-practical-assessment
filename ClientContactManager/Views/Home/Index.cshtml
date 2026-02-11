@@ -2,27 +2,41 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to Client Contact Manager</h1>
-    <p class="lead">Manage your clients and contacts efficiently</p>
-    
-    <div class="row mt-5">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Contacts</h5>
-                    <p class="card-text">View and manage all your contacts. Link contacts to multiple clients.</p>
-                    <a asp-controller="Contacts" asp-action="Index" class="btn btn-primary">View Contacts</a>
-                </div>
+<section class="hero-panel">
+    <h1 class="hero-title">Built for fast, reliable relationship management</h1>
+    <p class="hero-subtitle">Keep client records clean, keep contact links accurate, and move from update to decision without friction.</p>
+    <div class="stats-grid mt-4">
+        <article class="stat-card">
+            <p class="stat-label">Workflow</p>
+            <p class="stat-value">2 Core Modules</p>
+        </article>
+        <article class="stat-card">
+            <p class="stat-label">Data Integrity</p>
+            <p class="stat-value">Unique Emails</p>
+        </article>
+        <article class="stat-card">
+            <p class="stat-label">Client Identity</p>
+            <p class="stat-value">Auto Codes</p>
+        </article>
+    </div>
+</section>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <h5 class="card-title">Contacts</h5>
+                <p class="card-text">Create, edit, and link contacts to one or more clients with fast validation and clean workflows.</p>
+                <a asp-controller="Contacts" asp-action="Index" class="btn btn-primary">View Contacts</a>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Clients</h5>
-                    <p class="card-text">View and manage all your clients. Each client gets a unique auto-generated code.</p>
-                    <a asp-controller="Clients" asp-action="Index" class="btn btn-primary">View Clients</a>
-                </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-body p-4">
+                <h5 class="card-title">Clients</h5>
+                <p class="card-text">Manage client profiles with immutable identifiers, then track every related contact from one screen.</p>
+                <a asp-controller="Clients" asp-action="Index" class="btn btn-primary">View Clients</a>
             </div>
         </div>
     </div>

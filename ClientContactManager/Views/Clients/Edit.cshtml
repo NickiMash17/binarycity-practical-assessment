@@ -91,8 +91,13 @@
                                 <td class="text-start">@cc.Contact.FullName</td>
                                 <td class="text-start">@cc.Contact.Email</td>
                                 <td class="text-start">
-                                    <a asp-action="UnlinkContact" asp-route-clientId="@Model.Id" asp-route-contactId="@cc.Contact.Id" 
-                                       onclick="return confirm('Are you sure you want to unlink this contact?');">Unlink</a>
+                                    <form asp-action="UnlinkContact" method="post" class="d-inline"
+                                          onsubmit="return confirm('Are you sure you want to unlink this contact?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="clientId" value="@Model.Id" />
+                                        <input type="hidden" name="contactId" value="@cc.Contact.Id" />
+                                        <button type="submit" class="btn btn-link p-0">Unlink</button>
+                                    </form>
                                 </td>
                             </tr>
                         }

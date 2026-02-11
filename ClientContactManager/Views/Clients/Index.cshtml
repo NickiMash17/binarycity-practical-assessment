@@ -4,15 +4,17 @@
     ViewData["Title"] = "Clients";
 }
 
-<h1>Clients</h1>
-
-<p>
+<section class="page-section">
+    <div>
+        <h1 class="mb-1">Clients</h1>
+        <p class="page-subtitle">Review and manage your client records and linked contact counts.</p>
+    </div>
     <a asp-action="Create" class="btn btn-primary">Create New Client</a>
-</p>
+</section>
 
 @if (Model.Any())
 {
-    <table class="table table-striped table-bordered">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th class="text-start">Name</th>
@@ -39,5 +41,7 @@
 }
 else
 {
-    <p>No client(s) found.</p>
+    <div class="empty-state">
+        <p class="mb-0">No clients found.</p>
+    </div>
 }
