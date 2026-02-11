@@ -1,0 +1,45 @@
+@model IEnumerable<ClientContactManager.Models.Contact>
+
+@{
+    ViewData["Title"] = "Contacts";
+}
+
+<h1>Contacts</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Contact</a>
+</p>
+
+@if (Model.Any())
+{
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th class="text-start">Name</th>
+                <th class="text-start">Surname</th>
+                <th class="text-start">Email</th>
+                <th class="text-center">No. of linked clients</th>
+                <th class="text-start">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-start">@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td class="text-start">@Html.DisplayFor(modelItem => item.Surname)</td>
+                    <td class="text-start">@Html.DisplayFor(modelItem => item.Email)</td>
+                    <td class="text-center">@item.LinkedClientsCount</td>
+                    <td class="text-start">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No contact(s) found.</p>
+}

@@ -1,8 +1,29 @@
-﻿@{
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to Client Contact Manager</h1>
+    <p class="lead">Manage your clients and contacts efficiently</p>
+    
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Contacts</h5>
+                    <p class="card-text">View and manage all your contacts. Link contacts to multiple clients.</p>
+                    <a asp-controller="Contacts" asp-action="Index" class="btn btn-primary">View Contacts</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Clients</h5>
+                    <p class="card-text">View and manage all your clients. Each client gets a unique auto-generated code.</p>
+                    <a asp-controller="Clients" asp-action="Index" class="btn btn-primary">View Clients</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
