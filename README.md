@@ -58,16 +58,29 @@ dotnet run
 ## Project Structure
 ```text
 binarycity-practical-assessment/
-├── ClientContactManager/
-│   ├── Controllers/
-│   ├── Data/
-│   ├── Models/
-│   ├── Services/
-│   ├── Views/
-│   └── wwwroot/
-├── binarycity-practical-assessment.sln
-└── README.md
+|-- ClientContactManager/
+|   |-- Controllers/
+|   |-- Data/
+|   |-- Models/
+|   |-- Services/
+|   |-- Views/
+|   `-- wwwroot/
+|-- binarycity-practical-assessment.sln
+`-- README.md
 ```
+
+## Challenges and Solutions
+1. Client code generation and validation
+- Challenge: `ClientCode` is required on the model, but users only provide the client name when creating a client.
+- Solution: In `ClientsController`, `ClientCode` is removed from model validation for create, then generated server-side before save.
+
+2. Managing many-to-many links from both screens
+- Challenge: Users need to link/unlink from both Client Edit and Contact Edit without duplicate links.
+- Solution: Added link/unlink actions with duplicate checks and clear success/error messages.
+
+3. UI layout consistency
+- Challenge: Footer/nav spacing and hero styling needed cleanup while keeping pages responsive.
+- Solution: Updated layout and CSS for sticky footer behavior, responsive nav collapse, and a flat background.
 
 ## Notes
 - The solution currently has no automated test project.
