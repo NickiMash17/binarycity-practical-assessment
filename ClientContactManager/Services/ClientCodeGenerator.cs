@@ -1,5 +1,6 @@
 using ClientContactManager.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace ClientContactManager.Services
 {
@@ -13,13 +14,13 @@ namespace ClientContactManager.Services
         }
 
         /// <summary>
-        /// Generates a unique client code in format: AAA001
-        /// First 3 characters are uppercase letters from client name (padded with 'A' if needed)
-        /// Last 3 characters are sequential numbers (001-999)
+        /// Generates a unique client code in format: AAA100
+        /// First 3 characters are uppercase initials/letters from client name (padded with 'A' if needed)
+        /// Last 3 characters are sequential numbers (100-999)
         /// </summary>
         public async Task<string> GenerateClientCodeAsync(string clientName)
         {
-            // Extract first 3 letters from name, convert to uppercase
+            // Extract prefix from name
             string prefix = ExtractPrefix(clientName);
 
             // Find existing codes with this prefix
@@ -37,47 +38,40 @@ namespace ClientContactManager.Services
 
         private string ExtractPrefix(string clientName)
         {
-            // Remove any non-letter characters and convert to uppercase
-            string lettersOnly = new string(clientName.Where(char.IsLetter).ToArray()).ToUpper();
+            var words = Regex.Matches(clientName.ToUpperInvariant(), "[A-Z]+")
+                .Select(m => m.Value)
+                .Where(w => !string.IsNullOrWhiteSpace(w))
+                .ToList();
 
-            if (lettersOnly.Length >= 3)
+            if (words.Count >= 2)
             {
-                return lettersOnly.Substring(0, 3);
+                // Multi-word names: initials from first 3 words (e.g., First National Bank -> FNB)
+                return string.Concat(words.Take(3).Select(w => w[0])).PadRight(3, 'A');
             }
-            else if (lettersOnly.Length > 0)
+
+            if (words.Count == 1)
             {
-                // Pad with 'A' if less than 3 characters
-                return lettersOnly.PadRight(3, 'A');
+                // Single-word names: first 3 letters, padded if needed
+                return words[0].PadRight(3, 'A').Substring(0, 3);
             }
-            else
-            {
-                // If no letters at all, default to "AAA"
-                return "AAA";
-            }
+
+            // If no letters at all, default to "AAA"
+            return "AAA";
         }
 
         private int FindNextAvailableNumber(List<string> existingCodes, string prefix)
         {
-            if (!existingCodes.Any())
-            {
-                return 1;
-            }
+            const int start = 100;
 
-            // Extract numbers from existing codes
             var usedNumbers = existingCodes
-                .Select(code => {
-                    if (code.Length >= 6 && int.TryParse(code.Substring(3), out int num))
-                    {
-                        return num;
-                    }
-                    return 0;
-                })
-                .Where(num => num > 0)
+                .Where(code => code.Length == 6 && code.StartsWith(prefix))
+                .Select(code => int.TryParse(code.Substring(3, 3), out int num) ? num : 0)
+                .Where(num => num >= start && num <= 999)
                 .OrderBy(num => num)
                 .ToList();
 
             // Find first gap or next number
-            int nextNumber = 1;
+            int nextNumber = start;
             foreach (var num in usedNumbers)
             {
                 if (num == nextNumber)

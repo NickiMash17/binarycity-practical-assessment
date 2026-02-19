@@ -36,6 +36,10 @@ namespace ClientContactManager.Data
 
             // Ensure email uniqueness
             modelBuilder.Entity<Contact>()
+                .Property(c => c.Email)
+                .UseCollation("NOCASE");
+
+            modelBuilder.Entity<Contact>()
                 .HasIndex(c => c.Email)
                 .IsUnique();
         }

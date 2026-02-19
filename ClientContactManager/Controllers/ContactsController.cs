@@ -39,6 +39,8 @@ namespace ClientContactManager.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Surname,Email")] Contact contact)
         {
+            contact.Email = NormalizeEmail(contact.Email);
+
             // Check email uniqueness
             if (await _context.Contacts.AnyAsync(c => c.Email == contact.Email))
             {
@@ -100,6 +102,8 @@ namespace ClientContactManager.Controllers
             {
                 return NotFound();
             }
+
+            contact.Email = NormalizeEmail(contact.Email);
 
             // Check email uniqueness (excluding current contact)
             if (await _context.Contacts.AnyAsync(c => c.Email == contact.Email && c.Id != contact.Id))
@@ -268,5 +272,8 @@ namespace ClientContactManager.Controllers
         {
             return _context.Contacts.Any(e => e.Id == id);
         }
+
+        private static string NormalizeEmail(string email) =>
+            (email ?? string.Empty).Trim().ToLowerInvariant();
     }
 }

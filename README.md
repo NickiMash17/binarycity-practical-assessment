@@ -8,7 +8,7 @@ The app manages:
 - contacts
 - many-to-many links between clients and contacts
 
-It also generates a unique client code in `AAA001` format based on the client name.
+It also generates a unique client code in `AAA100` format based on the client name.
 
 ## Tech Stack
 - ASP.NET Core MVC (.NET 10)
@@ -24,17 +24,18 @@ It also generates a unique client code in `AAA001` format based on the client na
 - Auto-generated client codes
 
 ## Client Code Generation
-Code format: `AAA001`
+Code format: `AAA100`
 
 Rules implemented:
-- First 3 letters from the client name (letters only, uppercase)
-- Pad with `A` if fewer than 3 letters
-- Suffix starts at `001`
+- Multi-word name: first letters of up to first 3 words (e.g., `First National Bank` -> `FNB`)
+- Single-word name: first 3 letters (uppercase)
+- Pad prefix with `A` if fewer than 3 letters
+- Suffix starts at `100`
 - Suffix increments for existing clients with the same prefix
 
 Example:
-- `Binary City` -> `BIN001`
-- `Binary Solutions` -> `BIN002`
+- `First National Bank` -> `FNB100`
+- `First National Brokerage` -> `FNB101`
 
 ## Run Locally
 1. Clone:
